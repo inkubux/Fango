@@ -9,7 +9,7 @@ CREATE TABLE `users` (
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 INSERT INTO `users` VALUES (1,'andrea','giardina'),(2,'mario','rossi');
 */
-require_once '../fango.php';
+require_once dirname(__FILE__) . '/../fango.php';
 
 function test_fangodb_getone() {
 	$db = get_db();
@@ -135,7 +135,7 @@ function test_fangomodel_isnew() {
 
 //------------------------------------------------------------------------------
 function get_db() {
-	$db = new FangoDB('mysql:host=localhost;dbname=fango', 'root', '');
+	$db = new FangoDB('mysql:host=localhost;dbname=fango', 'fango', 'fango');
 	return $db;
 }
 
