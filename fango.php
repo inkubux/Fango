@@ -574,6 +574,16 @@ class FangoDB extends PDO {
 	 * @var FangoDB
 	 */
 	static $db;
+	
+	/**
+	 * @var FangoEvent
+	 */
+	public $beforeExecute;
+	
+	/**
+	 * @var FangoEvent
+	 */
+	public $afterExecute;
 
 	/**
 	 * @see PDO::__construct
@@ -585,8 +595,11 @@ class FangoDB extends PDO {
 	/**
 	 * @see PDO::__construct
 	 */
-	function __construct($dsn,$username=null,$password=null,$driver_options=array()) {
+	function __construct($dsn,$username=null,$password=null,$driver_options=array()) {	
 		parent::__construct($dsn,$username,$password,$driver_options);
+		
+	    $this->beforeExecute = new FangoEvent('beforeExecute');
+		$this->afterExecute = new FangoEvent('afterExecute');
 		self::$onNew->fire($this);
 	}
 
@@ -607,8 +620,13 @@ class FangoDB extends PDO {
 	 * @return PDOStatement
 	 */
 	function execute($sql,$params = null) {
+		$e = $this->beforeExecute->fire($this,$sql, $params); //beforeExecute event fired
+		list($sql, $params) = $e->params;
+		if ($e->preventDefault()) return;
+		
 		$sth = $this->prepare($sql);
 		$sth->execute($params);
+		$e = $this->afterExecute->fire($this,$sql, $params, $sth); //afterExecute event fired
 		return $sth;
 	}
 
@@ -699,7 +717,7 @@ class FangoModel extends FangoBase {
 	/**
 	 * @var array
 	 */
-	public $events = array('beforeUpdate','beforeInsert','afterUpdate','afterInsert');
+	public $events = array('beforeUpdate','beforeInsert', 'beforeDelete','afterUpdate','afterInsert', 'afterDelete');
 
 	/**
 	 * @param string $name
