@@ -332,7 +332,7 @@ class FangoController extends FangoBase {
  */
 class FangoView extends FangoBase {
 	/**
-	 * The name of the view, used by render as imput/select etc
+	 * The name of the view, used by render as input/select etc
 	 * @var string
 	 */
 	protected $_name;
@@ -500,7 +500,7 @@ class FangoInput extends FangoBase {
 	}
 
 	/**
-	 * Render the view as imput
+	 * Render the view as input
 	 * @param string $properties the html properties
 	 * @return string the html input
 	 */
